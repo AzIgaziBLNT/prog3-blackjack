@@ -26,10 +26,10 @@ public class Deck {
 
     // színek (suit) enumja
     public enum SuitEnum {
-        SPADE,
-        CLUB,
-        HEART,
-        DIAMOND
+        S, // spade
+        C, // club
+        H, // heart
+        D // diamond
     }
 
 }

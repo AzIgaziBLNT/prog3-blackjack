@@ -1,19 +1,31 @@
 package blackjack.gameGUI;
 
+import blackjack.backend.PlayerProfile;
 import blackjack.gameLogic.GameStateHandler;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
 
 public class GameFrame {
 
     private GameStateHandler gameLogic = new GameStateHandler();
 
+    private ArrayList<PlayerProfile> profiles = new ArrayList<>();
+
+    // panelek a kártyák megjelenítéséhez
+    private JPanel dealerCardPanel;
+    private JPanel playerCardPanel;
+
+    // címke státusz kiírásához
+    private JLabel statusLabel;
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             new GameFrame().createGUI();
-        })
+        });
     }
 
     private void createGUI() {
@@ -27,6 +39,7 @@ public class GameFrame {
         frame.getContentPane().add(createGamePanel());
 
         frame.pack();
+        frame.setLocationRelativeTo(null); // középre igazítás
         frame.setVisible(true);
     }
 
@@ -75,16 +88,18 @@ public class GameFrame {
         JMenu gameMenu = new JMenu("Játék");
         JMenuItem newGame = new JMenuItem("Új játék");
 
-        newGame.addActionListener(e -> gameLogic.newRound());
+        newGame.addActionListener(e -> {
+            gameLogic.newRound();
+            updateGUI();
+        });
         gameMenu.add(newGame);
 
         // dicsőségfal menü
         JMenu highScoresMenu = new JMenu("Dicsőségfal");
-        //JMenuItem highScores = new JMenuItem("Dicsőségfal");
+        JMenuItem highScores = new JMenuItem("Dicsőségfal");
 
-        //highScores.addActionListener(e -> showHighScores());
-        //highScoresMenu.add(highScores);
-        highScoresMenu.addActionListener(e -> showHighScores());
+        highScores.addActionListener(e -> showHighScores());
+        highScoresMenu.add(highScores);
 
         menuBar.add(fileMenu);
         menuBar.add(gameMenu);
@@ -110,8 +125,28 @@ public class GameFrame {
 
     }
 
-    private void saveFile(){}
-    private void loadFile(){}
+    // szerializálás
+    private void saveFile(){
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Profiles.ser"))) {
+             out.writeObject(profiles);
+             JOptionPane.showMessageDialog(null,"A mentés sikeres!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "A mentés sikertelen :(" + e.getMessage());
+            e.printStackTrace(); //debug
+        }
+    }
+
+    private void loadFile(){
+        File f = new File("Profiles.ser");
+        if (!f.exists()) return;
+
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(f))) {
+            profiles = (ArrayList<PlayerProfile>) in.readObject();
+        } catch (IOException | ClassNotFoundException e){
+            JOptionPane.showMessageDialog(null, "Hiba a betöltés közben :(" + e.getMessage());
+            e.printStackTrace(); //debug
+        }
+    }
 
     private void showHighScores() {
         if (profiles == null)
