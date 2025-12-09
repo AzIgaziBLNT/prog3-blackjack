@@ -9,7 +9,7 @@ public class CardTests {
     @Test
     @DisplayName("1. Card konstruktor teszt")
     public void cardConstructorTest() {
-        Card c = new Card(2,"SPADE");
+        Card c = new Card(2,"S");
         assertEquals(2, c.getCardValue());
     }
 }
