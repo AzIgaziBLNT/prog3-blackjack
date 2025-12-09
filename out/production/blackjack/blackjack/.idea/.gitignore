@@ -6,3 +6,19 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+.idea/
+
+# Temporary files
+[Bb]in/
+[Oo]bj/
+
+# VS settings
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Other
+*.log
+Thumbs.db
