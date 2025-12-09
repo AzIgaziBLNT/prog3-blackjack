@@ -3,7 +3,7 @@ package blackjack.backend;
 import java.io.Serializable;
 
 public class PlayerProfile implements Serializable {
-    private static final long serialVersionUID = 1L; //verziókövetés szerializáláshoz
+    private static final long serialVersionUID = 1L; //verziókövetés
     private String name;
     private int winCount = 0;
     private int loseCount = 0;

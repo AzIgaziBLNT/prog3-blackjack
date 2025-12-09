@@ -11,6 +11,7 @@ public class DataSerializer {
     public void saveFile(){
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("Profiles.ser"))) {
             out.writeObject(profiles);
+            System.out.println("\nSikeres mentés!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "A mentés sikertelen :(" + e.getMessage());
         }
@@ -22,6 +23,7 @@ public class DataSerializer {
 
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(f))) {
             profiles = (ArrayList<PlayerProfile>) in.readObject();
+            System.out.println("\nSikeres betöltés!");
         } catch (IOException | ClassNotFoundException e){
             JOptionPane.showMessageDialog(null, "Hiba a betöltés közben :(" + e.getMessage());
         }

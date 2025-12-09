@@ -11,21 +11,23 @@ public class Hand  {
 
     public int getHandValue() {
         int handValue = 0;
-        boolean hasAce = false;
+        int aceCount = 0;
         for (int i=0; i < hand.size(); ++i) {
-            if (hand.get(i).getCardValue() <= 10)
+            if (hand.get(i).getCardValue() <= 10) // 2-10
                 handValue += hand.get(i).getCardValue();
-            else if (hand.get(i).getCardValue() > 10 && hand.get(i).getCardValue() < 14)
+            else if (hand.get(i).getCardValue() > 10 && hand.get(i).getCardValue() < 14) // J, Q, K
                 handValue += 10;
-            else if (hand.get(i).getCardValue() == 14) {
+            else if (hand.get(i).getCardValue() == 14) { // A
                 handValue += 11;
-                hasAce = true;
+                ++aceCount;
             }
         }
 
         // ha van ász
-        if (hasAce && handValue > 21)
+        while (handValue > 21 && aceCount > 0) {
             handValue = handValue - 11 + 1; // ász értéke 11 helyett 1-et ér, mert így nem haladja meg a kéz értéke a 21-et
+            --aceCount;
+        }
 
         return handValue;
     }

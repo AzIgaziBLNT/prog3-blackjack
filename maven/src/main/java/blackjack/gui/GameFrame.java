@@ -8,7 +8,6 @@ import blackjack.logic.GameStateHandler;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class GameFrame extends JFrame{
@@ -55,7 +54,7 @@ public class GameFrame extends JFrame{
                 profileSelecter.addItem(p);
         }
 
-        Object[] msg = {"Új profilt hozol létre?", profileSelecter};
+        Object[] msg = {"Válassz játékosprofilt:", profileSelecter};
         int option = JOptionPane.showConfirmDialog(frame, msg, "Profil választása", JOptionPane.OK_CANCEL_OPTION);
 
         if (option == JOptionPane.OK_OPTION) {
@@ -66,6 +65,20 @@ public class GameFrame extends JFrame{
             } else if (selected instanceof PlayerProfile) {
                 currentPlayer = (PlayerProfile) selected;
             }
+
+            if (gameLogic != null) {
+                gameLogic.resetGame(); //profilváltásnál reset
+
+                // UI reset
+                hitButton.setEnabled(false);
+                standButton.setEnabled(false);
+                placeBetButton.setEnabled(true);
+                betInputField.setEnabled(true);
+                betLabel.setText("Jelenlegi tét: 0");
+
+                updateGUI();
+            }
+
         } else { // default profil
             currentPlayer = new PlayerProfile("Guest");
         }
@@ -106,9 +119,9 @@ public class GameFrame extends JFrame{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1440, 720);
 
-        java.net.URL iconURL = getClass().getResource("/cards/icon.png");
-        if (iconURL != null) {
-            ImageIcon icon = new ImageIcon(iconURL.toString());
+        java.net.URL url = getClass().getResource("/cards/icon.png");
+        if (url != null) {
+            ImageIcon icon = new ImageIcon(url);
             frame.setIconImage(icon.getImage());
         } else {
             System.err.println("Alkalmazás ikonja nem található!");
@@ -186,7 +199,7 @@ public class GameFrame extends JFrame{
         JLabel balTitle = new JLabel("Egyenleg:");
         balTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        balanceLabel = new JLabel("2000 JMF");
+        balanceLabel = new JLabel("JMF");
         balanceLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
         balanceLabel.setForeground(new Color(0, 100, 0));
         balanceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -203,7 +216,7 @@ public class GameFrame extends JFrame{
         placeBetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         placeBetButton.setBackground(new Color(50, 50, 200));
         placeBetButton.setForeground(Color.WHITE);
-        placeBetButton.addActionListener(e -> start());
+        placeBetButton.addActionListener(e -> betUI());
 
         betLabel = new JLabel("Jelenlegi tét: 0");
         betLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -223,16 +236,19 @@ public class GameFrame extends JFrame{
         return panel;
     }
 
-    private void start() {
+    private void betUI() {
         try {
             long bet = Long.parseLong(betInputField.getText());
 
-            // Validációk
+            // ell.
             if (bet <= 0) {
                 JOptionPane.showMessageDialog(frame, "A tétnek pozitívnak kell lennie!");
                 return;
             }
-
+            if (bet > currentPlayer.getNetWorth()) {
+                JOptionPane.showMessageDialog(frame, "Túl nagy a tét, nincs elég della!");
+                return;
+            }
             gameLogic.setBet(bet);
             gameLogic.newRound();
 
@@ -381,5 +397,6 @@ public class GameFrame extends JFrame{
             return null;
         }
     }
+
 
 }

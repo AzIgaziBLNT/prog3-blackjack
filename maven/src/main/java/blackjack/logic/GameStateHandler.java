@@ -43,23 +43,37 @@ public class GameStateHandler {
     public void bustCheck(Hand currentHand) {
         if (currentHand.getHandValue() > 21) {
             currentState = GameState.ROUND_END;
+            evaluateRound();
         }
-        evaluateRound();
+    }
+
+    public void blackjCheck(Hand currentHand) {
+        if (currentHand.getHandValue() == 21) {
+            currentState = GameState.ROUND_END;
+            evaluateRound();
+        }
     }
 
     // új kör, 2-2 lap osztása
     public void newRound() {
+        endState = EndState.NONE;
+        currentState = GameState.PLAYER_ROUND;
+
         playerHand.clear();
         dealerHand.clear();
+
+        this.deck = new Deck();
+        this.deck.shuffle();
 
         playerHand.draw(deck.getDeck());
         dealerHand.draw(deck.getDeck());
         dealerHand.getHand().get(1).setIsHidden(true);
 
         bustCheck(playerHand);
+        blackjCheck(playerHand);
 
-        currentState = GameState.PLAYER_ROUND;
-        endState = EndState.NONE;
+        if (currentState != GameState.ROUND_END)
+            currentState = GameState.PLAYER_ROUND;
     }
 
     // játékos húz
@@ -92,12 +106,12 @@ public class GameStateHandler {
     private void evaluateRound() {
         if (this.currentState != GameState.ROUND_END) return; // failsafe
 
-        if (playerHand.getHandValue() > 21 && dealerHand.getHandValue() > 21) // push
-            setEndState(EndState.PUSH);
-        else if (playerHand.getHandValue() > 21) // player bust
+        if (playerHand.getHandValue() > 21) // player bust
             setEndState(EndState.PLAYER_BUST);
         else if (dealerHand.getHandValue() > 21) // dealer bust
             setEndState(EndState.DEALER_BUST);
+        else if (playerHand.getHandValue() == dealerHand.getHandValue()) // push
+            setEndState(EndState.PUSH);
         else if (playerHand.getHandValue() == 21 && playerHand.getHand().size() == 2) // blackjack
             setEndState(EndState.BLACKJACK);
         else if (playerHand.getHandValue() < dealerHand.getHandValue()) // lose
@@ -112,8 +126,8 @@ public class GameStateHandler {
         String msg = "";
         switch (endState) {
             case WIN:
-                msg = "GG EZ! Nyertél " + 2*bet + " JMF-et";
-                profile.setNetWorth(2*bet);
+                msg = "GG EZ! Nyertél " + bet + " JMF-et";
+                profile.setNetWorth(bet);
                 profile.setWinCount();
                 break;
             case LOSE:
@@ -127,16 +141,16 @@ public class GameStateHandler {
                 profile.setLoseCount();
                 break;
             case DEALER_BUST:
-                msg = "Az osztó besokallt (bust)! Nyertél " + 2*bet + " JMF-et";
-                profile.setNetWorth(2*bet);
+                msg = "Az osztó besokallt (bust)! Nyertél " + bet + " JMF-et";
+                profile.setNetWorth(bet);
                 profile.setWinCount();
                 break;
             case PUSH:
                 msg = "Döntetlen (push)! A tét visszajár";
                 break;
             case BLACKJACK:
-                msg = "BLACKJACK!!! Nyertél: " + 3*bet + " JMF-et!!!";
-                profile.setNetWorth(3*bet);
+                msg = "BLACKJACK!!! Nyertél: " + 2*bet + " JMF-et!!!";
+                profile.setNetWorth(2*bet);
                 profile.setWinCount();
                 break;
             default:
@@ -144,6 +158,19 @@ public class GameStateHandler {
         }
 
         return msg;
+    }
+
+    public void resetGame() {
+        playerHand.clear();
+        dealerHand.clear();
+
+        this.deck = new Deck();
+        this.deck.shuffle();
+
+        this.currentState = GameState.DEALING;
+        this.endState = EndState.NONE;
+
+        this.bet = 0;
     }
 
     // setterek / getterek

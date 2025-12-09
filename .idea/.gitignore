@@ -7,6 +7,12 @@
 /dataSources/
 /dataSources.local.xml
 .idea/
+out/
+*.iml
+*.iws
+
+# App specific
+Profiles.ser
 
 # Temporary files
 [Bb]in/
@@ -19,6 +25,12 @@
 *.userosscache
 *.sln.docstates
 
+# Package
+*.jar
+*.war
+*.zip
+
 # Other
 *.log
+.DS_Store
 Thumbs.db
