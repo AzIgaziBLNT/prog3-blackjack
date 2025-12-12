@@ -1,15 +1,19 @@
 # Default ignored files
 /shelf/
-/workspace.xml
+/.idea/workspace.xml
+
 # Editor-based HTTP Client requests
 /httpRequests/
+
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# IDE
 .idea/
-out/
 *.iml
 *.iws
+.vscode/
 
 # App specific
 Profiles.ser
@@ -18,17 +22,9 @@ Profiles.ser
 [Bb]in/
 [Oo]bj/
 
-# VS settings
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# Package
-*.jar
-*.war
-*.zip
+# Build artifacts
+target/
+out/
 
 # Other
 *.log

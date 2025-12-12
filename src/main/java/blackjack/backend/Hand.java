@@ -1,7 +1,5 @@
 package blackjack.backend;
 
-import blackjack.logic.GameStateHandler;
-
 import java.util.ArrayList;
 
 public class Hand  {
