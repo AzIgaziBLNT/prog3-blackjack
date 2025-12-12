@@ -1,32 +1,18 @@
-# Default ignored files
-/shelf/
-/.idea/workspace.xml
-
-# Editor-based HTTP Client requests
-/httpRequests/
-
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-
-# IDE
+# IDE fájlok
 .idea/
 *.iml
 *.iws
 .vscode/
 
-# App specific
-Profiles.ser
-
-# Temporary files
-[Bb]in/
-[Oo]bj/
-
-# Build artifacts
+# Fordítási eredmények (Build artifacts)
 target/
 out/
+*.class
 
-# Other
-*.log
+# Egyéb generált vagy rendszerfájlok
 .DS_Store
 Thumbs.db
+*.log
+
+# Alkalmazás specifikus generált fájlok
+Profiles.ser
